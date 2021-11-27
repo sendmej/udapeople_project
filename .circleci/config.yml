@@ -157,7 +157,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - udapeople_project/.circleci/ansible/inventory.txt
+            - project/.circleci/ansible/inventory.txt
       - destroy-environment   
 
 workflows:
