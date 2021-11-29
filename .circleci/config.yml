@@ -9,7 +9,7 @@ commands:
           when: on_fail
           command: |
            aws cloudformation delete-stack \
-           --stack-name "udapeople-frontend${CIRCLE_WORKFLOW_ID:0:7}" \
+           --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
            --region us-east-1 
            aws cloudformation delete-stack \
            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -159,6 +159,30 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment   
+  
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install tar and gzip
+          command:  |
+            yum -y install tar gzip
+      - add_ssh_keys:
+          fingerprints: ["59:b9:90:a7:79:4d:e1:8b:f4:a2:0a:86:3e:d2:b8:1d"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible 
+      - run:
+          name: Configure server
+          command: |
+           cd .circleci/ansible
+           ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment      
 
 workflows:
   default:
@@ -175,4 +199,6 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       
