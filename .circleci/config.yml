@@ -18,14 +18,14 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-       workflow_id:
+       WORKFLOW_ID:
           type: string    
     steps:
       - run:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl -H "token: 0997018d-c7cb-4ca8-9de2-4670516e174e" --request GET https://api.memstash.io/values/CIRCLE_<<parameters.workflow_id>>)
+            SUCCESS=$(curl -H "token: 0997018d-c7cb-4ca8-9de2-4670516e174e" --request GET https://api.memstash.io/values/CIRCLE_<<parameters.WORKFLOW_ID>>)
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
