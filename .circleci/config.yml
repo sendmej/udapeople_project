@@ -193,8 +193,8 @@ jobs:
       - run:
           name: Run migrations
           command: |
-           pip3 install \
-           awscli \
+           apt-get install -y python3-pip
+           pip3 install awscli
            cd backend
            npm install
            npm run migrations > migrations_dump.txt
