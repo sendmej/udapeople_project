@@ -166,9 +166,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install tar and gzip
+          name: Install tar, gzip and awscli
           command:  |
-            yum -y install tar gzip
+            apk add --update tar gzip awscli
       - add_ssh_keys:
           fingerprints: ["59:b9:90:a7:79:4d:e1:8b:f4:a2:0a:86:3e:d2:b8:1d"]
       - attach_workspace:
