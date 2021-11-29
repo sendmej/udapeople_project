@@ -22,7 +22,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl -H "token: 0997018d-c7cb-4ca8-9de2-4670516e174e" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            SUCCESS=$(curl -H "token: 0997018d-c7cb-4ca8-9de2-4670516e174e" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -231,7 +231,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum -y install tar gzip npm 
+            yum -y install tar gzip
+            sudo dnf install npm 
       - run:
           name: Get backend url
           command: |
