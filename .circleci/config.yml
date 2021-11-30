@@ -266,8 +266,7 @@ jobs:
           command:  |
             apk add tar gzip 
             apk update pip3
-            pip3 install \
-            awscli \
+            pip3 install awscli
             apk add --update curl
             apk add --update nodejs npm
       - add_ssh_keys:
