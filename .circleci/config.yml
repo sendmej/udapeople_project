@@ -264,8 +264,9 @@ jobs:
       - run:
           name: Install tar, gzip and awscli
           command:  |
-            apk add tar gzip 
-            apk add --update pip3
+            apk add tar gzip
+            apk update
+            apk add pip3
             pip3 install \
             awscli \
             apk add --update curl
