@@ -232,7 +232,7 @@ jobs:
           name: Install dependencies
           command: |
             yum -y install tar gzip
-            sudo dnf install npm 
+            yum -y install nodejs npm
       - run:
           name: Get backend url
           command: |
