@@ -232,8 +232,8 @@ jobs:
           name: Install dependencies
           command: |
             yum -y install tar gzip
-            sudo curl --silent --location https://rpm.nodesource.com/setup_13.x | bash -
-            sudo yum install -y nodejs npm
+            curl --silent --location https://rpm.nodesource.com/setup_13.x | bash -
+            yum install -y nodejs npm
       - run:
           name: Get backend url
           command: |
