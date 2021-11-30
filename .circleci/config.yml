@@ -265,10 +265,10 @@ jobs:
           name: Install tar, gzip and awscli
           command:  |
             apk add tar gzip 
-            apk update pip3
+            apk add --update pip3
             pip3 install \
             awscli \
-            apk add curl
+            apk add --update curl
             apk add --update nodejs npm
       - add_ssh_keys:
           fingerprints: ["59:b9:90:a7:79:4d:e1:8b:f4:a2:0a:86:3e:d2:b8:1d"]
