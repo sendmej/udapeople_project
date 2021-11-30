@@ -23,7 +23,7 @@ commands:
           when: on_fail
           command: |
             SUCCESS=$(curl -H "token: 0997018d-c7cb-4ca8-9de2-4670516e174e" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if(( $SUCCESS == 1 )); 
+            if(( $SUCCESS == '1' )); 
             then
               cd ~/project/backend
               npm install
@@ -186,6 +186,7 @@ jobs:
           name: Install tar, gzip and awscli
           command:  |
             apk add tar gzip 
+            apk update pip3
             pip3 install \
             awscli \
       - add_ssh_keys:
@@ -264,6 +265,7 @@ jobs:
           name: Install tar, gzip and awscli
           command:  |
             apk add tar gzip 
+            apk update pip3
             pip3 install \
             awscli \
             apk add curl
