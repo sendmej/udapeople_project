@@ -37,7 +37,7 @@
 
 - name: Copy files
   ansible.builtin.copy:
-    src: /root/project/artifact.tar.gz
+    src: ~/project/.circleci/ansible/roles/deploy/files/
     dest: ~/build-backend/artifact.tar.gz
 
 - name: Extract Artefact into /build-backend
@@ -47,4 +47,5 @@
 
 - name: Executing node
   shell: |
+    cd backend 
     pm2 start npm -- start
