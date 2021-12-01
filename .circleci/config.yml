@@ -3,8 +3,6 @@ version: 2.1
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      workflow_id: string
     steps:
       - run:
           name: Destroy environments
@@ -19,8 +17,6 @@ commands:
   
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      workflow_id: string
     steps:
       - run:
           name: Revert migrations
@@ -180,7 +176,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment   
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7
+  
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -229,7 +225,7 @@ jobs:
             curl -H "Content-Type: text/plain" -H "token: 0997018d-c7cb-4ca8-9de2-4670516e174e" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
             fi
       - destroy-environment
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7      
+      
   deploy-frontend:
     docker:
       - image: amazon/aws-cli
@@ -260,9 +256,7 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7
       - revert-migrations
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7
   
   deploy-backend:
     docker:
@@ -298,9 +292,7 @@ jobs:
            ansible-playbook -i inventory.txt deploy-backend.yml
             
       - destroy-environment
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7
       - revert-migrations 
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7
 
   smoke-test:
     docker:
@@ -344,13 +336,9 @@ jobs:
             fi
       
       - destroy-environment
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7
       - revert-migrations 
-          workflow_id: CIRCLE_WORKFLOW_ID:0:7
   
   
-
-
 workflows:
   default:
     jobs:
@@ -374,4 +362,6 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       
