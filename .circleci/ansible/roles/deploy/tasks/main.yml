@@ -37,7 +37,7 @@
 
 - name: Copy files
   ansible.builtin.copy:
-    src: ~/project/artifact.tar.gz
+    src: /root/project/artifact.tar.gz
     dest: ~/build-backend/artifact.tar.gz
 
 - name: Extract Artefact into /build-backend
