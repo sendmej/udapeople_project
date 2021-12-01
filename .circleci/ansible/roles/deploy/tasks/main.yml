@@ -31,21 +31,35 @@
     state: present
 
 - name: Creates directory
+  become: yes
   file:
-    path: ~/build-backend
+    path: ~/backend
     state: directory
+    mode: 0755
 
-- name: Copy files
-  ansible.builtin.copy:
-    src: ~/project/.circleci/ansible/roles/deploy/files/
-    dest: ~/build-backend/artifact.tar.gz
+ #- name: Copy files
+ # ansible.builtin.copy:
+ #   src: /root/project
+ #   dest: /build-backend
 
-- name: Extract Artefact into /build-backend
-  ansible.builtin.unarchive:
-    src: ~/build-backend/artifact.tar.gz
-    dest: ~/build-backend
+#- name: Extract Artefact into /build-backend
+#  ansible.builtin.unarchive:
+#    src: /build-backend/artifact.tar.gz
+#    dest: /build-backend
+
+- name: copy artifact files
+  become: yes
+  copy:
+    src: ~/project/artifact.tar.gz
+    dest: ~/backend/artifact.tar.gz
+
+- name: Extract backend files
+  become: yes
+  shell: |
+    cd ~/backend
+    tar -vxf artifact.tar.gz
 
 - name: Executing node
   shell: |
-    cd backend 
+    cd ~/backend 
     pm2 start npm -- start
