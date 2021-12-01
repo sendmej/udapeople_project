@@ -3,6 +3,8 @@ version: 2.1
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      workflow_id: string
     steps:
       - run:
           name: Destroy environments
@@ -17,6 +19,8 @@ commands:
   
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      workflow_id: string
     steps:
       - run:
           name: Revert migrations
@@ -176,7 +180,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment   
-  
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -202,7 +206,8 @@ jobs:
           command: |
            cd .circleci/ansible
            ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment 
+      - destroy-environment
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7 
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
@@ -223,7 +228,8 @@ jobs:
             then
             curl -H "Content-Type: text/plain" -H "token: 0997018d-c7cb-4ca8-9de2-4670516e174e" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
             fi
-      - destroy-environment      
+      - destroy-environment
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7      
   deploy-frontend:
     docker:
       - image: amazon/aws-cli
@@ -254,7 +260,9 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7
       - revert-migrations
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7
   
   deploy-backend:
     docker:
@@ -290,7 +298,55 @@ jobs:
            ansible-playbook -i inventory.txt deploy-backend.yml
             
       - destroy-environment
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7
       - revert-migrations 
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7
+
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+             apk add --update curl
+             apk update pip3
+             pip3 install awscli
+      - run:
+          name: Get backend url
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text)
+      - run:
+          name: Backend smoke test.
+          command: |
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+            if curl "${API_URL}/api/status" | grep "ok"
+            then
+              return 0
+            else
+              return 1
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+            echo ${URL} 
+            if curl -s ${URL} | grep "Welcome"
+            then
+            # Change this to 0 after the job fails
+              return 1
+            else
+              return 1
+            fi
+      
+      - destroy-environment
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7
+      - revert-migrations 
+          workflow_id: CIRCLE_WORKFLOW_ID:0:7
   
   
 
