@@ -32,13 +32,18 @@
 
 - name: Creates directory
   file:
-    path: ~/web
+    path: ~/build-backend
     state: directory
 
-- name: Extract Artefact into /web
+- name: Copy files
+  ansible.builtin.copy:
+    src: ~/project/artifact.tar.gz
+    dest: ~/build-backend/artifact.tar.gz
+
+- name: Extract Artefact into /build-backend
   ansible.builtin.unarchive:
-    src: .artifact.tar.gz
-    dest: /web
+    src: ~/build-backend/artifact.tar.gz
+    dest: ~/build-backend
 
 - name: Executing node
   shell: |
