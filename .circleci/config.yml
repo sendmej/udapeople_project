@@ -345,7 +345,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum -y curl
+            yum -y install tar gzip
       - run:
           name: Update cloudfront distribution
           command: |
