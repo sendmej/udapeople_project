@@ -63,3 +63,5 @@
   shell: |
     cd ~/backend 
     pm2 start npm -- start
+    cd dist
+    pm2 start main.js --update-env
