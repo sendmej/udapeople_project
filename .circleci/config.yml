@@ -8,6 +8,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
+           aws s3 rm "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
            aws cloudformation delete-stack \
            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
            --region us-east-1 
@@ -298,6 +299,7 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
     steps:
+      - run: sleep 600
       - checkout
       - run:
           name: Install dependencies
