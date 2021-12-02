@@ -37,16 +37,6 @@
     state: directory
     mode: 0755
 
- #- name: Copy files
- # ansible.builtin.copy:
- #   src: /root/project
- #   dest: /build-backend
-
-#- name: Extract Artefact into /build-backend
-#  ansible.builtin.unarchive:
-#    src: /build-backend/artifact.tar.gz
-#    dest: /build-backend
-
 - name: copy artifact files
   become: yes
   copy:
@@ -61,7 +51,9 @@
 
 - name: Executing node
   shell: |
-    cd ~/backend 
-    pm2 start npm -- start
+    cd ~/backend
+    npm install
+    pm2 stop default
+    pm2 start npm -- run start
     cd dist
     pm2 start main.js --update-env
