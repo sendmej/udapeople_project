@@ -156,6 +156,7 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --region us-east-1
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -361,7 +362,7 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
-            --region us-east-1
+
       - destroy-environment
       - revert-migrations
   cleanup:
