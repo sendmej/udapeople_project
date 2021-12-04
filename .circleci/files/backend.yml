@@ -39,8 +39,8 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
-#  UdaElasticIP:
-#    Type: AWS::EC2::EIP
-#    Properties:
-#      Domain: vpc
-#      InstanceId: !Ref EC2Instance
+  UdaElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref EC2Instance
